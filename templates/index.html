@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defensive Password Security & Policy Audit Suite</title>
+    <!-- Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header / Navigation Bar -->
+        <header class="app-header">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>CIPHER<span>GUARD</span></h1>
+                    <span class="sub-badge">Defensive Security Audit Suite</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <nav class="nav-tabs">
+                    <button class="tab-btn active" data-tab="tab-analyzer">
+                        <i class="fa-solid fa-shield-cat"></i> Dual Assessment
+                    </button>
+                    <button class="tab-btn red-team-btn" data-tab="tab-rules">
+                        <i class="fa-solid fa-user-ninja"></i> Red Team Mutations
+                    </button>
+                    <button class="tab-btn blue-team-btn" data-tab="tab-batch">
+                        <i class="fa-solid fa-shield-halved"></i> Blue Team Audit
+                    </button>
+                    <button class="tab-btn" data-tab="tab-report">
+                        <i class="fa-solid fa-file-contract"></i> Security Audit Report
+                    </button>
+                </nav>
+                <button id="theme-toggle-btn" class="theme-toggle-btn" title="Toggle Light/Dark Theme">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- TAB 1: LIVE PASSOWRD ANALYZER -->
+            <section id="tab-analyzer" class="tab-panel active">
+                <div class="grid-layout">
+                    <!-- Left Panel: Input & Quick Stats -->
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-key"></i> Candidate Password Input</h2>
+                            <span class="info-tooltip" title="Defensive evaluation only. Input is analyzed locally and never stored.">
+                                <i class="fa-solid fa-circle-info"></i>
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-group">
+                                <div class="password-wrapper">
+                                    <input type="password" id="input-password" placeholder="Enter candidate password to audit..." autocomplete="off">
+                                    <button type="button" id="toggle-password-visibility" title="Toggle Visibility">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Score & Gauge -->
+                            <div class="score-container" id="score-box">
+                                <div class="gauge-wrapper">
+                                    <div class="gauge-body">
+                                        <div class="gauge-fill" id="score-gauge"></div>
+                                        <div class="gauge-cover">
+                                            <span id="score-value">0</span>
+                                            <span class="score-label">/ 100</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tier-info">
+                                    <span class="badge" id="tier-badge">Awaiting Input</span>
+                                    <p class="entropy-caption" id="entropy-value">Entropy: 0.0 bits</p>
+                                </div>
+                            </div>
+
+                            <!-- Live Character Meter -->
+                            <div class="char-metrics">
+                                <div class="metric-item">
+                                    <span class="metric-label">Length</span>
+                                    <span class="metric-val" id="val-length">0</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Pool Size</span>
+                                    <span class="metric-val" id="val-pool">0</span>
+                                </div>
+                                <div class="metric-item">
+                                    <span class="metric-label">Space</span>
+                                    <span class="metric-val" id="val-space">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Panel: Red Team Crack Estimations -->
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-user-ninja text-red"></i> Red Team Crack Benchmark</h2>
+                            <span class="badge team-badge red">Red Team Attack Simulation</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="crack-scenarios" id="crack-scenarios-container">
+                                <p class="placeholder-text">Enter a password to evaluate cracking times across hardware configurations.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Full Width: Blue Team NIST Policy & Recommendations -->
+                    <div class="card glass-card full-width">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-shield-halved text-blue"></i> Blue Team NIST SP 800-63B Policy Compliance Audit</h2>
+                            <span class="badge team-badge blue">Blue Team Defense Control</span>
+                        </div>
+                        <div class="card-body grid-2-col">
+                            <div class="nist-results">
+                                <h3>Policy Check Results</h3>
+                                <ul class="check-list" id="nist-issues-list">
+                                    <li class="placeholder-text">Policy compliance details will display here.</li>
+                                </ul>
+                            </div>
+                            <div class="recommendations-box">
+                                <h3><i class="fa-solid fa-shield-heart"></i> Mitigation Advice</h3>
+                                <ul class="rec-list" id="recommendations-list">
+                                    <li class="placeholder-text">Actionable security recommendations will appear here.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: ENTERPRISE BATCH AUDIT (BLUE TEAM) -->
+            <section id="tab-batch" class="tab-panel">
+                <div class="grid-layout">
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-shield-halved text-blue"></i> Blue Team Enterprise Password Health Audit</h2>
+                            <span class="badge team-badge blue">Blue Team Defensive</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="hint-text">Defensive audit tool for security administrators. Evaluate organizational password samples against NIST standards.</p>
+                            <textarea id="batch-input" rows="8" placeholder="Admin123!&#10;Company2024&#10;correct-horse-battery-staple&#10;qwerty123456&#10;P@ssw0rd2026!"></textarea>
+                            <button id="btn-run-batch" class="btn btn-primary">
+                                <i class="fa-solid fa-shield-check"></i> Run Blue Team Audit
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-chart-pie text-blue"></i> Compliance Metrics & Risk Distribution</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="batch-summary-metrics" id="batch-metrics">
+                                <div class="stat-box">
+                                    <span class="stat-num" id="batch-total">0</span>
+                                    <span class="stat-desc">Total Audited</span>
+                                </div>
+                                <div class="stat-box">
+                                    <span class="stat-num" id="batch-compliance">0%</span>
+                                    <span class="stat-desc">NIST Compliant</span>
+                                </div>
+                                <div class="stat-box">
+                                    <span class="stat-num" id="batch-avg-entropy">0.0</span>
+                                    <span class="stat-desc">Avg Entropy (bits)</span>
+                                </div>
+                            </div>
+
+                            <div class="chart-container" style="position: relative; height: 220px;">
+                                <canvas id="tierChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: RED TEAM ASSESSMENT SUITE -->
+            <section id="tab-rules" class="tab-panel">
+                <div class="grid-layout">
+                    <!-- Card 1: Dictionary Generation & Mutation -->
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-user-ninja text-red"></i> 1. Dictionary Generation & Rule Mutations</h2>
+                            <span class="badge team-badge red">Red Team Technique</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="hint-text">Simulates rule-based dictionary attack generation by transforming base terms using leet-speak, case variations, and date suffixes.</p>
+                            
+                            <div class="mutation-controls">
+                                <div class="input-field">
+                                    <label for="rule-base-words">Base Terms (comma separated):</label>
+                                    <input type="text" id="rule-base-words" value="Company, Admin, Secure">
+                                </div>
+                                <div class="checkbox-group">
+                                    <label><input type="checkbox" id="chk-append-years" checked> Append Years / Suffixes</label>
+                                    <label><input type="checkbox" id="chk-leet" checked> Apply Leet-speak (@, 3, 1, 0, $)</label>
+                                    <label><input type="checkbox" id="chk-capitalize" checked> Case Variations</label>
+                                </div>
+                                <button id="btn-run-rules" class="btn btn-secondary">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Red Team Wordlist
+                                </button>
+                            </div>
+
+                            <div class="mutation-output">
+                                <h3>Generated Wordlist Mutations (<span id="mutation-count">0</span> generated)</h3>
+                                <div class="mutation-grid" id="mutation-results">
+                                    <p class="placeholder-text">Click "Generate Red Team Wordlist" to simulate attack dictionary mutations.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Controlled Lab Hash Identifier -->
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-microchip text-red"></i> 2. Hash Algorithm & Format Inspector</h2>
+                            <span class="badge team-badge red">Lab Assessment</span>
+                        </div>
+                        <div class="card-body">
+                            <p class="hint-text">Demonstrates algorithm identification for Linux shadow entries ($6$ SHA-512, $1$ MD5) and Windows NTLM hash strings in a controlled lab environment.</p>
+                            
+                            <div class="input-group">
+                                <input type="text" id="hash-inspector-input" placeholder="Paste sample hash (e.g. $6$saltsalt$hash... or 32-hex NTLM)" value="$6$qwerty$vG8...sample">
+                                <button type="button" id="btn-inspect-hash" class="btn btn-outline" style="margin-top: 10px;">
+                                    <i class="fa-solid fa-magnifying-glass font-icon"></i> Inspect Hash Format
+                                </button>
+                            </div>
+
+                            <div id="hash-inspect-result" class="hash-result-box">
+                                <div class="scenario-card">
+                                    <span class="scenario-label">Detected Algorithm:</span>
+                                    <span class="scenario-time" id="hash-alg-type">SHA-512 (Linux $6$)</span>
+                                </div>
+                                <div class="scenario-card">
+                                    <span class="scenario-label">Key Derivation Cost:</span>
+                                    <span class="scenario-time" id="hash-cost-spec">5,000 Iterations</span>
+                                </div>
+                                <div class="scenario-card">
+                                    <span class="scenario-label">Estimated Crack Difficulty:</span>
+                                    <span class="scenario-time" id="hash-diff-tier">High (Key Stretched)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 & 4: Brute Force & Rule-Based Methodology -->
+                    <div class="card glass-card full-width">
+                        <div class="card-header">
+                            <h2><i class="fa-solid fa-bolt text-red"></i> 3 & 4. Brute-Force & Rule-Based Cracking Methodology</h2>
+                            <span class="badge team-badge red">Simulated Metrics</span>
+                        </div>
+                        <div class="card-body grid-2-col">
+                            <div class="methodology-box">
+                                <h3><i class="fa-solid fa-layer-group"></i> Rule-Based Attack Strategy</h3>
+                                <ul class="rec-list">
+                                    <li><b>Targeted Dictionary Attack</b>: Tests common passwords, mutated corporate terms, and leet-speak variants.</li>
+                                    <li><b>Incremental Brute-Force</b>: Iterates combinations across character sets ($a-z$, $A-Z$, $0-9$, symbols).</li>
+                                    <li><b>Hybrid Attack Mode</b>: Combines base dictionary words with appended 4-digit years or numeric suffixes.</li>
+                                </ul>
+                            </div>
+                            <div class="benchmarks-box">
+                                <h3><i class="fa-solid fa-server"></i> Hardware Attack Speed Benchmarks</h3>
+                                <div class="crack-scenarios">
+                                    <div class="scenario-card offline-fast">
+                                        <span class="scenario-label">GPU Rig (MD5 / NTLM Hashes)</span>
+                                        <span class="scenario-time">100,000,000,000 H/sec</span>
+                                    </div>
+                                    <div class="scenario-card">
+                                        <span class="scenario-label">GPU Rig (SHA-256 Hashes)</span>
+                                        <span class="scenario-time">10,000,000,000 H/sec</span>
+                                    </div>
+                                    <div class="scenario-card offline-hardened">
+                                        <span class="scenario-label">Hardened KDF (Bcrypt / Argon2id)</span>
+                                        <span class="scenario-time">50,000 H/sec</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: SECURITY AUDIT REPORT -->
+            <section id="tab-report" class="tab-panel">
+                <div class="card glass-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-file-shield"></i> Security Audit Report Preview</h2>
+                        <div class="header-actions">
+                            <button id="btn-copy-report" class="btn btn-outline">
+                                <i class="fa-regular fa-copy"></i> Copy Markdown
+                            </button>
+                            <button id="btn-download-report" class="btn btn-primary">
+                                <i class="fa-solid fa-download"></i> Download Report (.md)
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <pre class="report-code" id="report-view">
+Select or evaluate a password in the "Live Analyzer" tab to generate a downloadable compliance report.
+                        </pre>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p><i class="fa-solid fa-shield-cat"></i> CIPHERGUARD Defensive Password Security Audit Suite &bull; Built for Security Administrators & Policy Analysts</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
